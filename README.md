@@ -17,6 +17,7 @@ sh extra/deploy-policy-create.sh
 sh extra/execution-role-create.sh
 
 # deploy the application
+make zappa_settings
 zappa deploy dev
 zappa update dev
 zappa update -n dev
