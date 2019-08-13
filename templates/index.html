@@ -4,6 +4,9 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var dt_links_table_options = {
+			'columnDefs': dt_static_options['columnDefs'].concat([
+				{'targets': 'col_created', 'render': (data, type, row) => {return data.slice(0,16);}}
+			]),
 			'paging': true,
 			'pageLength': 100,
 			'lengthMenu': [[10, 50, 100, 1000, -1], [10, 50, 100, 1000, "All"]],
@@ -22,7 +25,7 @@
 <table id="dt_links_table" class="table table-condensed table-hover">
 	<thead>
 		<tr>
-			<th>created</th>
+			<th class="col_created">created</th>
 			<th>link</th>
 			<th>tags</th>
 			<th class="no-sort">_buttons</th>
@@ -35,7 +38,7 @@
 			<td><a href="{{ item['link'] }}">{{ item['link'][:crop_link] }}{% if item['link']|length > crop_link %}...{% endif %}</a></td>
 			<td>{{ item['tags'] }}</td>
 			<td>
-				<a class="btn btn-xs btn-default abutton_delete_by_url" href="#" data-url="{{ url_for('delete_route', id=item['id']) }}"><span class="glyphicon glyphicon-trash text-alert"></span></a>
+				<a class="btn btn-xs btn-default abutton_delete_by_url" href="#" data-url="{{ url_for('delete_route', link_id=item['id']) }}"><span class="glyphicon glyphicon-trash text-alert"></span></a>
 			</td>
 		</tr>
 	{% endfor %}

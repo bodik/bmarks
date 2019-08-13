@@ -20,12 +20,11 @@ app.config['DYNAMO_TABLES'] = [{
     'AttributeDefinitions': [{'AttributeName': 'id', 'AttributeType': 'S'}],
     'ProvisionedThroughput': {'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
 }]
-# globaly enable flask_wtf csrf token helper
 # least intrusive way to pass token into every view without enforcing csrf on all routes
 app.add_template_global(name='csrf_token', f=generate_csrf)
 
 dynamo = Dynamo(app)  # pylint: disable=invalid-name
-table_links = dynamo.tables['links']
+table_links = dynamo.tables['links']  # pylint: disable=invalid-name
 
 
 class ButtonForm(FlaskForm):
@@ -54,20 +53,20 @@ def add_route():
     form = LinkForm()
 
     if form.validate_on_submit():
-        table_links.put_item(Item={'id': str(uuid4()), 'link': form.link.data, 'tags': ['a'], 'created': datetime.utcnow().isoformat()})
+        table_links.put_item(Item={'id': str(uuid4()), 'link': form.link.data, 'tags': [], 'created': datetime.utcnow().isoformat()})
         return redirect(url_for('index_route'))
 
     return render_template('add.html', form=form)
 
 
-@app.route('/delete/<id>', methods=['POST'])
-def delete_route(id):
+@app.route('/delete/<link_id>', methods=['POST'])
+def delete_route(link_id):
     """delete item"""
 
     form = ButtonForm()
 
     if form.validate_on_submit():
-        table_links.delete_item(Key={'id': id})
+        table_links.delete_item(Key={'id': link_id})
         return redirect(url_for('index_route'))
 
     return render_template('button-delete.html', form=form)
