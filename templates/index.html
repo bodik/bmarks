@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block script %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		var dt_links_table_options = {
+			'paging': true,
+			'pageLength': 100,
+			'lengthMenu': [[10, 50, 100, 1000, -1], [10, 50, 100, 1000, "All"]],
+			'drawCallback': function (settings) {
+				this.find('td a.abutton_delete_by_url').on('click', {'confirmation': 'Really delete?'}, action_submit_by_url);
+			}
+		};
+		$('#dt_links_table').DataTable($.extend({}, dt_static_options, dt_links_table_options));
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+{% set crop_link = 100 %}
+
+<table id="dt_links_table" class="table table-condensed table-hover">
+	<thead>
+		<tr>
+			<th>created</th>
+			<th>link</th>
+			<th>tags</th>
+			<th class="no-sort">_buttons</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for item in links %}
+		<tr>
+			<td>{{ item['created'] }}</td>
+			<td><a href="{{ item['link'] }}">{{ item['link'][:crop_link] }}{% if item['link']|length > crop_link %}...{% endif %}</a></td>
+			<td>{{ item['tags'] }}</td>
+			<td>
+				<a class="btn btn-xs btn-default abutton_delete_by_url" href="#" data-url="{{ url_for('delete_route', id=item['id']) }}"><span class="glyphicon glyphicon-trash text-alert"></span></a>
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
