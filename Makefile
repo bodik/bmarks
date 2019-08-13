@@ -10,5 +10,10 @@ lint:
 	python3 -m flake8 bmarks
 	python3 -m pylint bmarks
 
+
+zappa_settings:
+	mkdir -p build
+	extra/compile_template.py extra/zappa_settings.json.j2 aws_account_id=${AWS_ACCOUNT_ID} > build/zappa_settings.json
+
 deploy:
 	zappa deploy dev

@@ -1,9 +1,1 @@
-{
-    "dev": {
-        "app_function": "run.app",
-        "project_name": "bmarks",
-        "runtime": "python3.7",
-        "s3_bucket": "bmarks-dev",
-	"aws_region": "eu-west-1"
-    }
-}
+build/zappa_settings.json
