@@ -35,7 +35,7 @@ class LinkForm(FlaskForm):
     """link form"""
 
     link = StringField('Link', [InputRequired()])
-    tags = StringField('Tags')
+    tags = StringField('Tags', description='Multiple tags separated by comma (,).')
     submit = SubmitField('Save')
 
     def parsed_data(self):

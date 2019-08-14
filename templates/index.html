@@ -6,7 +6,7 @@
 	<a href="{{link}}">{{{text_for_link link}}}</a>
 </script>
 <script id="link_tags.hbs" type="text/x-handlebars-template">
-	{{# each tags}}<span class="label label-info">{{this}}</span>{{/each}}
+	{{# each tags}} <span class="label label-info">{{this}}</span>{{/each}}
 </script>
 <script id="link_controls.hbs" type="text/x-handlebars-template">
 	<div class="dropdown">
@@ -66,7 +66,7 @@
 		'pageLength': 100,
 		'lengthMenu': [[10, 50, 100, 1000, -1], [10, 50, 100, 1000, "All"]],
 		'drawCallback': function (settings) {
-			this.find('td a.abutton_markasread_by_url').on('click', {'dt': this.api()}, action_submit_by_url);
+			this.find('td a.abutton_toggleread_by_url').on('click', {'dt': this.api()}, action_submit_by_url);
 			this.find('td a.abutton_delete_by_url').on('click', {'dt': this.api(), 'confirmation': 'Really delete?'}, action_submit_by_url);
 		}
 	};
