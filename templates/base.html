@@ -36,16 +36,17 @@
 		function submit_form(url, data={}) {
 			data['csrf_token'] = $('meta[name="csrf-token"]').attr('content');
 			return $.ajax({"url": url,"type": "POST", "data": data})
-				.fail(function(xhr, status, exception) { toastr.error(xhr.responseJSON["title"]); });
+				.fail(function(xhr, status, exception) { toastr.error(xhr.hasOwnProperty('responseJSON') ? xhr.responseJSON["title"] : 'Request failed'); });
 		}
 
 		/**
-		 * action submit by url with confirmation dialog
+		 * action submit by url with optional confirmation dialog
 		 * @param {object} event - event with data {'confirmation': string}
 		 */
 		function action_submit_by_url(event) {
-			var confirmation = event.data.hasOwnProperty('confirmation') ? event.data.confirmation : 'Are you sure?';
-			if (!confirm(confirmation)) { return; }
+			if (event.data.hasOwnProperty('confirmation')) {
+				if (!confirm(event.data.confirmation)) { return; }
+			}
 			submit_form(event.target.closest('a').getAttribute('data-url'))
 				.always(function() { location.reload(); });
 		}
