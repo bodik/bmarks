@@ -20,6 +20,8 @@
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css"/>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
+
 	<style>
 		/* required items on forms */
 		div.form-group.required label.control-label:after { content:"*"; color:red; }
@@ -41,28 +43,15 @@
 
 		/**
 		 * action submit by url with optional confirmation dialog
-		 * @param {object} event - event with data {'confirmation': string}
+		 * @param {object} event - event with data {'dt': datatable instance, 'confirmation': string}
 		 */
 		function action_submit_by_url(event) {
 			if (event.data.hasOwnProperty('confirmation')) {
 				if (!confirm(event.data.confirmation)) { return; }
 			}
 			submit_form(event.target.closest('a').getAttribute('data-url'))
-				.always(function() { location.reload(); });
+				.always(function() { event.data.dt.ajax.reload(); });
 		}
-
-		var dt_static_options = {
-			'columnDefs': [ {
-				'targets': 'no-sort',
-				'orderable': false,
-			} ],
-			'order': [[0, 'desc']],
-			'paging': false,
-			'info': false
-		};
-		$(document).ready(function() {
-			$('.dt_static').DataTable(dt_static_options);
-		});
 	</script>
 
 	{% block style %}{% endblock %}
