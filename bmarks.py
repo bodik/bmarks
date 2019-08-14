@@ -96,6 +96,7 @@ def toggleread_route(link_id):
     """toggles read tag on link"""
 
     form = ButtonForm()
+
     if form.validate_on_submit():
         link = table_links.get_item(Key={'id': link_id})['Item']
         if not link:
@@ -124,6 +125,5 @@ def delete_route(link_id):
 
     if form.validate_on_submit():
         table_links.delete_item(Key={'id': link_id})
-        return redirect(url_for('index_route'))
 
-    return render_template('button-delete.html', form=form)
+    return redirect(url_for('index_route'))
