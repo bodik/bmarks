@@ -10,6 +10,15 @@ lint:
 	python3 -m flake8 bmarks
 	python3 -m pylint bmarks
 
+build/dynamodb/DynamoDBLocal.jar:
+	rm -f /tmp/dynamodb_local_latest.tar.gz
+	wget --no-verbose -O /tmp/dynamodb_local_latest.tar.gz https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/dynamodb_local_latest.tar.gz
+	mkdir -p build/dynamodb
+	tar xzf /tmp/dynamodb_local_latest.tar.gz -C build/dynamodb
+
+dynamo: build/dynamodb/DynamoDBLocal.jar
+	cd build/dynamodb && screen -S dynamo -d -m java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar
+
 
 zappa_settings:
 	mkdir -p build
