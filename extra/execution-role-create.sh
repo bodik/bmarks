@@ -5,7 +5,7 @@ POLICY_NAME="bmarks-execution-role-policy"
 POLICY_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${POLICY_NAME}"
 
 mkdir -p build
-extra/compile_template.py extra/execution-role-policy.json.j2 > build/execution-role-policy.json
+extra/compile_template.py extra/execution-role-policy.json.j2 account_id=${AWS_ACCOUNT_ID} > build/execution-role-policy.json
 
 aws iam detach-role-policy --role-name ${ROLE_NAME} --policy-arn ${POLICY_ARN}
 aws iam delete-policy --policy-arn ${POLICY_ARN}

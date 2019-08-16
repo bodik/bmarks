@@ -1,21 +1,47 @@
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:*"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "lambda:InvokeFunction"
-            ],
-            "Resource": [
-                "*"
-            ]
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"logs:*"
+			],
+			"Resource": "arn:aws:logs:*:*:*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"lambda:InvokeFunction"
+			],
+			"Resource": [
+				"arn:aws:lambda:*:{{ account_id }}:function:bmarks-dev"
+			]
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"dynamodb:GetItem",
+				"dynamodb:PutItem",
+				"dynamodb:Query",
+				"dynamodb:Scan",
+				"dynamodb:UpdateItem",
+				"dax:GetItem",
+				"dax:PutItem",
+				"dax:Query",
+				"dax:Scan",
+				"dax:UpdateItem"
+			],
+			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/links"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"dynamodb:Query",
+				"dynamodb:Scan",
+				"dax:Query",
+				"dax:Scan"
+			],
+			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/links/index/*"
+		}
+	]
 }
