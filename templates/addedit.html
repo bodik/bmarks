@@ -1,10 +1,34 @@
 {% extends "base.html" %}
 {% import "bootstrap_wtf.html" as b_wtf %}
 
+{% block script %}
+<script style="text/javascript">
+	function action_add_tag(event) {
+		$('input[name="tags"]').tagEditor('addTag', event.target.text, true);
+	}
+
+	$(document).ready(function() {
+		$('input[name="tags"]').tagEditor();
+		$('.abutton_add_tag').on('click', action_add_tag);
+	});
+</script>
+{% endblock %}
+
 {% block content %}
 <form class="form-horizontal" method="post">
 	{{ form.csrf_token }}
 	{{ b_wtf.bootstrap_field(form.link, horizontal=True) }}
+	<div class="form-group">
+		<label class="col-sm-2 control-label"></label>
+		<div class="col-sm-10">
+			<a class="btn btn-xs btn-default abutton_add_tag">forensics</a>
+			<a class="btn btn-xs btn-default abutton_add_tag">pentest</a>
+			<a class="btn btn-xs btn-default abutton_add_tag">sysadmin</a>
+			<a class="btn btn-xs btn-default abutton_add_tag">development</a>
+			<a class="btn btn-xs btn-default abutton_add_tag">other</a>
+			<a class="btn btn-xs btn-default abutton_add_tag">tool</a>
+		</div>
+	</div>
 	{{ b_wtf.bootstrap_field(form.tags, horizontal=True) }}
 	{{ b_wtf.bootstrap_field(form.submit, horizontal=True) }}
 </form>
