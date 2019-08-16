@@ -6,6 +6,7 @@ from uuid import uuid4
 
 import pytest
 from botocore.exceptions import ClientError
+from flask import url_for
 from webtest import TestApp
 
 from bmarks import create_app, dynamo
@@ -18,6 +19,8 @@ def app(dynamodb):  # pylint: disable=unused-argument
     os.environ['DYNAMO_ENABLE_LOCAL'] = 'True'
     os.environ['DYNAMO_LOCAL_HOST'] = '127.0.0.1'
     os.environ['DYNAMO_LOCAL_PORT'] = '64222'
+    os.environ['PASSWORD'] = 'atestpassword'
+
     _app = create_app()
     with _app.test_request_context():
         # dynamodb fixture should cleanup all tables automatically, but it does not
@@ -33,6 +36,16 @@ def app(dynamodb):  # pylint: disable=unused-argument
 def client(app):  # pylint: disable=redefined-outer-name
     """yield client test context"""
     yield TestApp(app)
+
+
+@pytest.fixture
+def cl_user(client):  # pylint: disable=redefined-outer-name
+    """yield logged in app client"""
+
+    form = client.get(url_for('app.login_route')).form
+    form['password'] = os.environ['PASSWORD']
+    form.submit()
+    yield client
 
 
 @pytest.fixture

@@ -56,7 +56,7 @@
 			{'name': 'created', 'title': 'created', 'data': 'created', 'visible': false},
 			{'name': 'link', 'title': 'link', 'data': 'link', 'render': (data, type, row, meta) => { return link_link(row); }},
 			{'name': 'tags', 'title': 'tags', 'data': 'tags', 'render': (data, type, row, meta) => { return link_tags(row); }},
-			{'name': '_buttons', 'orderable': false, 'render': (data, type, row, meta) => { return link_controls(row); }}
+			{'name': '_buttons', 'orderable': false, 'searchable': false, 'render': (data, type, row, meta) => { return link_controls(row); }, 'visible': current_user_is_authenticated}
 		],
 		'info': true,
 		'order': [[1, 'desc']],

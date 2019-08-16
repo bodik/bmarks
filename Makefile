@@ -1,3 +1,7 @@
+.PHONY: all install-deps dynamo devserver lint test coverage zappa_settings deploy
+
+all: lint coverage
+
 # install
 venv:
 	sudo apt-get -y install python-virtualenv python3-virtualenv
