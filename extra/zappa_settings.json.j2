@@ -4,6 +4,17 @@
         "project_name": "bmarks",
         "runtime": "python3.7",
         "s3_bucket": "bmarks",
+	"exclude": [
+		".env",
+		".git",
+		".pytest_cache",
+		"__pycache__",
+		"build",
+		"extra",
+		"tests",
+		"venv",
+		"zappa_settings.json"
+	],
 
 	"aws_region": "eu-west-1",
 	"tags": {"app": "bmarks"},

@@ -69,12 +69,12 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="{{ url_for('index_route') }}">bmarks</a>
+			<a class="navbar-brand" href="{{ url_for('app.index_route') }}">bmarks</a>
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				{% if config['DEBUG'] %}<li><a title="debug is on"><span class="text-warning glyphicon glyphicon-warning-sign"></span></a></li>{% endif %}
-				<li><a href="{{ url_for('add_route') }}">Add link</a></li>
+				<li><a href="{{ url_for('app.add_route') }}">Add link</a></li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>

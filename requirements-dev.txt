@@ -1,2 +1,6 @@
+coverage
 flake8
+lxml
 pylint
+pytest
+pytest-dynamodb

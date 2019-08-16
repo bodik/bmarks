@@ -12,17 +12,17 @@
 	<div class="dropdown">
 		<button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown"><span class="caret"></span></button>
 		<ul class="dropdown-menu dropdown-menu-right">
-			<li><a class="abutton_toggleread_by_url" data-url="{{> toggleread_route link_id=id}}">{{{text_for_read tags}}}</a></li>
-			<li><a href="{{> edit_route link_id=id}}">Edit</a></li>
-			<li><a class="abutton_delete_by_url" data-url="{{> delete_route link_id=id}}">Delete</a></li>
+			<li><a class="abutton_toggleread_by_url" data-url="{{> app.toggleread_route link_id=id}}">{{{text_for_read tags}}}</a></li>
+			<li><a href="{{> app.edit_route link_id=id}}">Edit</a></li>
+			<li><a class="abutton_delete_by_url" data-url="{{> app.delete_route link_id=id}}">Delete</a></li>
 		</ul>
 	</div>
 </script>
 {% endraw %}
 <script type="text/javascript">
-	Handlebars.registerPartial('toggleread_route', "{{ url_for('toggleread_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
-	Handlebars.registerPartial('edit_route', "{{ url_for('edit_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
-	Handlebars.registerPartial('delete_route', "{{ url_for('delete_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
+	Handlebars.registerPartial('app.toggleread_route', "{{ url_for('app.toggleread_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
+	Handlebars.registerPartial('app.edit_route', "{{ url_for('app.edit_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
+	Handlebars.registerPartial('app.delete_route', "{{ url_for('app.delete_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
 
 	Handlebars.registerHelper('text_for_read', function(data) { return data.includes('read') ? 'Unread' : 'Read'; });
 	Handlebars.registerHelper('text_for_link', function(data) {
@@ -50,7 +50,7 @@
 	var link_controls = Handlebars.compile(document.getElementById('link_controls.hbs').innerHTML);
 
 	var dt_links_table_options = {
-		'ajax': {'url': "{{ url_for('index_json_route') }}"},
+		'ajax': {'url': "{{ url_for('app.index_json_route') }}"},
 		'columns': [
 			{'name': 'id', 'title': 'id', 'data': 'id', 'visible': false},
 			{'name': 'created', 'title': 'created', 'data': 'created', 'visible': false},
