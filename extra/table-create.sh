@@ -1,7 +1,8 @@
 #!/bin/sh
 
 aws dynamodb create-table \
-	--table-name links1 \
+	--table-name links \
 	--key-schema 'AttributeName=id,KeyType=HASH' \
 	--attribute-definitions 'AttributeName=id,AttributeType=S' \
-	--provisioned-throughput 'ReadCapacityUnits=5,WriteCapacityUnits=5'
+	--provisioned-throughput 'ReadCapacityUnits=5,WriteCapacityUnits=5' \
+	--tag 'app=bmarks'

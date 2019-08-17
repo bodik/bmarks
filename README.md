@@ -8,13 +8,14 @@ First aws webapp
 ```
 cp .env.example .env
 
-## configure aws admin credentials and push policies
+# configure admin credentials, push policies and create table
 editor .env
 . .env
 sh extra/deploy-policy-create.sh
 sh extra/execution-role-create.sh
+sh extra/table-create.sh
 
-## configure aws deployment credentials and push application
+# configure deployment credentials, application parameters and push application
 editor .env
 . .env
 make zappa_settings
@@ -28,7 +29,7 @@ zappa update -n dev
 ```
 cp .env.example .env
 
-## configure local dynamo instance and application parameters
+# configure local dynamo instance and application parameters
 editor .env
 . .env
 
