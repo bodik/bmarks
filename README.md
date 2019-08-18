@@ -1,6 +1,9 @@
-# bmarks -- bodik bookmarks
+# bmarks -- simple bookmark webapp running on aws
 
-First aws webapp
+Staying up-to-date in any field of study is hard and continuous process, in
+computer security is just a little bit harder. This app servers a few purposes:
+practice python coding, learn to work  with AWS ecosystem and to provide
+sortable haystack of interresting links for reading.
 
 
 ## AWS Setup
@@ -25,16 +28,17 @@ sh extra/table-create.sh
 ## Deployment
 
 ```
-# configure deployment credentials
+# configure deployment credentials and application parameters
 cp .env.example .env
 editor .env
 . .env
 
-# application parameters and push application
+# make venv
 make venv
 . venv/bin/activate
 make install-deps
 
+# deploy the application
 make zappa_settings
 zappa deploy dev
 zappa update dev
@@ -49,11 +53,12 @@ cp .env.example .env
 editor .env
 . .env
 
-# make venv and run development server
+# make venv
 make venv
 . venv/bin/activate
 make install-deps
 
+# run development server
 make dynamo
 make lint
 make test
