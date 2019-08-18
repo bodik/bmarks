@@ -6,7 +6,7 @@
 			"Action": [
 				"logs:*"
 			],
-			"Resource": "arn:aws:logs:*:*:*"
+			"Resource": "arn:aws:logs:*:{{ aws_account_id }}:log-group:/aws/lambda/bmarks-*"
 		},
 		{
 			"Effect": "Allow",
@@ -14,7 +14,7 @@
 				"lambda:InvokeFunction"
 			],
 			"Resource": [
-				"arn:aws:lambda:*:{{ account_id }}:function:bmarks-dev"
+				"arn:aws:lambda:*:{{ aws_account_id }}:function:bmarks-*"
 			]
 		},
 		{
@@ -33,7 +33,7 @@
 				"dax:Scan",
 				"dax:UpdateItem"
 			],
-			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/bmarks_links"
+			"Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/bmarks_links"
 		},
 		{
 			"Effect": "Allow",
@@ -43,7 +43,7 @@
 				"dax:Query",
 				"dax:Scan"
 			],
-			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/bmarks_links/index/*"
+			"Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/bmarks_links/index/*"
 		}
 	]
 }
