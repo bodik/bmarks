@@ -5,7 +5,7 @@ POLICY_NAME="bmarks-deploy"
 POLICY_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${POLICY_NAME}"
 
 mkdir -p build
-extra/compile_template.py extra/deploy-policy.json.j2 account_id=${AWS_ACCOUNT_ID} > build/deploy-policy.json
+extra/compile_template.py extra/deploy-policy.json.j2 aws_account_id=${AWS_ACCOUNT_ID} > build/deploy-policy.json
 
 aws iam detach-user-policy --user-name ${DEPLOY_USER} --policy-arn ${POLICY_ARN}
 aws iam delete-policy --policy-arn ${POLICY_ARN}

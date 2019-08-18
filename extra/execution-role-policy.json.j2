@@ -2,15 +2,7 @@
 	"Version": "2012-10-17",
 	"Statement": [
 		{
-			"Effect": "Allow",
-			"Action": [
-				"logs:*"
-			],
-			"Resource": [
-				"arn:aws:logs:*:{{ aws_account_id }}:log-group:/aws/lambda/bmarks-*"
-			]
-		},
-		{
+			"Sid": "Lambda",
 			"Effect": "Allow",
 			"Action": [
 				"lambda:InvokeFunction"
@@ -20,6 +12,7 @@
 			]
 		},
 		{
+			"Sid": "DynamoDBTable",
 			"Effect": "Allow",
 			"Action": [
 				"dynamodb:DeleteItem",
@@ -40,6 +33,7 @@
 			]
 		},
 		{
+			"Sid": "DynamoDBTableIndex",
 			"Effect": "Allow",
 			"Action": [
 				"dynamodb:Query",
@@ -49,6 +43,18 @@
 			],
 			"Resource": [
 				"arn:aws:dynamodb:*:{{ aws_account_id }}:table/bmarks_links/index/*"
+			]
+		},
+		{
+			"Sid": "CloudWatchLogs",
+			"Effect": "Allow",
+			"Action": [
+				"logs:CreateLogGroup",
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": [
+				"arn:aws:logs:*:{{ aws_account_id }}:log-group:/aws/lambda/bmarks-*"
 			]
 		}
 	]
