@@ -3,21 +3,38 @@
 First aws webapp
 
 
-## Install and deploy
+## AWS Setup
 
 ```
+# configure admin credentials
 cp .env.example .env
-
-# configure admin credentials, push policies and create table
 editor .env
 . .env
+
+# make venv
+make venv
+. venv/bin/activate
+pip install -r requirements-aws.txt 
+
+# push policies and create table
 sh extra/deploy-policy-create.sh
 sh extra/execution-role-create.sh
 sh extra/table-create.sh
+```
 
-# configure deployment credentials, application parameters and push application
+## Deployment
+
+```
+# configure deployment credentials
+cp .env.example .env
 editor .env
 . .env
+
+# application parameters and push application
+make venv
+. venv/bin/activate
+make install-deps
+
 make zappa_settings
 zappa deploy dev
 zappa update dev
@@ -27,11 +44,15 @@ zappa update -n dev
 ## Development
 
 ```
-cp .env.example .env
-
 # configure local dynamo instance and application parameters
+cp .env.example .env
 editor .env
 . .env
+
+# make venv and run development server
+make venv
+. venv/bin/activate
+make install-deps
 
 make dynamo
 make lint
