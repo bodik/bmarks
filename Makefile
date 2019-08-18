@@ -40,7 +40,7 @@ coverage:
 # deployment
 zappa_settings:
 	mkdir -p build
-	extra/compile_template.py extra/zappa_settings.json.j2 aws_account_id=${AWS_ACCOUNT_ID} > build/zappa_settings.json
+	extra/compile_template.py extra/zappa_settings.json.j2 aws_account_id=${AWS_ACCOUNT_ID} secret_key=${SECRET_KEY} password=${PASSWORD} > build/zappa_settings.json
 
 deploy:
 	zappa deploy dev

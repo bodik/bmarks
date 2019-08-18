@@ -5,12 +5,12 @@ import os
 from datetime import datetime
 from uuid import uuid4
 
-from flask import Blueprint, current_app, Flask, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_dynamo import Dynamo
 from flask_login import login_required, login_user, logout_user, LoginManager, UserMixin
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import generate_csrf
-from wtforms import PasswordField, StringField, SubmitField
+from wtforms import PasswordField, StringField, SubmitField, TextAreaField
 from wtforms.validators import InputRequired
 
 
@@ -21,6 +21,7 @@ from wtforms.validators import InputRequired
 blueprint = Blueprint('app', __name__)  # pylint: disable=invalid-name
 dynamo = Dynamo()  # pylint: disable=invalid-name
 login_manager = LoginManager()  # pylint: disable=invalid-name
+TABLE_NAME = 'bmarks_links'
 
 def create_app():
     """application factory"""
@@ -28,7 +29,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or os.urandom(32)
     app.config['DYNAMO_TABLES'] = [{
-        'TableName': 'links',
+        'TableName': TABLE_NAME,
         'KeySchema': [{'AttributeName': 'id', 'KeyType': 'HASH'}],
         'AttributeDefinitions': [{'AttributeName': 'id', 'AttributeType': 'S'}],
         'ProvisionedThroughput': {'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
@@ -75,6 +76,13 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 
+class ImportForm(FlaskForm):
+    """Bulk import form"""
+
+    imported = TextAreaField('Imported', [InputRequired()], render_kw={'rows': 20})
+    submit = SubmitField('Import')
+
+
 #
 # authentication
 #
@@ -102,6 +110,7 @@ def login_route():
     if form.validate_on_submit():
         user = User()
         if user.password and (user.password == form.password.data):
+            session.permanent = True
             login_user(user)
 
             # redirect after login
@@ -136,7 +145,7 @@ def index_route():
 @blueprint.route('/json', methods=['GET'])
 def index_json_route():
     """datatable data endpoint"""
-    return jsonify({'data': dynamo.tables['links'].scan()['Items']})
+    return jsonify({'data': dynamo.tables[TABLE_NAME].scan()['Items']})
 
 
 @blueprint.route('/add', methods=['GET', 'POST'])
@@ -148,7 +157,7 @@ def add_route():
 
     if form.validate_on_submit():
         link, tags = form.parsed_data()
-        dynamo.tables['links'].put_item(Item={'id': str(uuid4()), 'link': link, 'tags': tags, 'created': datetime.utcnow().isoformat()})
+        dynamo.tables[TABLE_NAME].put_item(Item={'id': str(uuid4()), 'link': link, 'tags': tags, 'created': datetime.utcnow().isoformat()})
         return redirect(url_for('app.index_route'))
 
     return render_template('addedit.html', form=form)
@@ -159,12 +168,12 @@ def add_route():
 def edit_route(link_id):
     """edit link"""
 
-    link = dynamo.tables['links'].get_item(Key={'id': link_id})['Item']
+    link = dynamo.tables[TABLE_NAME].get_item(Key={'id': link_id})['Item']
     form = LinkForm(link=link['link'], tags=','.join(link['tags']))
 
     if form.validate_on_submit():
         link, tags = form.parsed_data()
-        dynamo.tables['links'].update_item(
+        dynamo.tables[TABLE_NAME].update_item(
             Key={'id': link_id},
             UpdateExpression='set link = :link, tags = :tags',
             ExpressionAttributeValues={':link': link, ':tags': tags},
@@ -182,14 +191,14 @@ def toggleread_route(link_id):
     form = ButtonForm()
 
     if form.validate_on_submit():
-        link = dynamo.tables['links'].get_item(Key={'id': link_id})['Item']
+        link = dynamo.tables[TABLE_NAME].get_item(Key={'id': link_id})['Item']
 
         if 'read' in link['tags']:
             link['tags'].remove('read')
         else:
             link['tags'].append('read')
 
-        dynamo.tables['links'].update_item(
+        dynamo.tables[TABLE_NAME].update_item(
             Key={'id': link_id},
             UpdateExpression='set tags = :tags',
             ExpressionAttributeValues={':tags': link['tags']},
@@ -206,6 +215,23 @@ def delete_route(link_id):
     form = ButtonForm()
 
     if form.validate_on_submit():
-        dynamo.tables['links'].delete_item(Key={'id': link_id})
+        dynamo.tables[TABLE_NAME].delete_item(Key={'id': link_id})
 
     return redirect(url_for('app.index_route'))
+
+
+@blueprint.route('/import', methods=['GET', 'POST'])
+@login_required
+def import_route():
+    """bulk import links"""
+
+    form = ImportForm()
+
+    if form.validate_on_submit():
+        for link in [tmp.strip() for tmp in form.imported.data.splitlines()]:
+            if link:
+                dynamo.tables[TABLE_NAME].put_item(
+                    Item={'id': str(uuid4()), 'link': link, 'tags': ['imported'], 'created': datetime.utcnow().isoformat()})
+        return redirect(url_for('app.index_route'))
+
+    return render_template('import.html', form=form)

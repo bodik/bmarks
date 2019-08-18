@@ -6,13 +6,13 @@
 	<a href="{{link}}">{{{text_for_link link}}}</a>
 </script>
 <script id="link_tags.hbs" type="text/x-handlebars-template">
-	{{# each tags}} <span class="label label-info">{{this}}</span>{{/each}}
+	{{# each tags}} <span class="label {{label_for_tag this}}">{{this}}</span>{{/each}}
 </script>
 <script id="link_controls.hbs" type="text/x-handlebars-template">
 	<div class="dropdown">
 		<button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown"><span class="caret"></span></button>
 		<ul class="dropdown-menu dropdown-menu-right">
-			<li><a class="abutton_toggleread_by_url" data-url="{{> app.toggleread_route link_id=id}}">{{{text_for_read tags}}}</a></li>
+			<li><a class="abutton_toggleread_by_url" data-url="{{> app.toggleread_route link_id=id}}">{{text_for_read tags}}</a></li>
 			<li><a href="{{> app.edit_route link_id=id}}">Edit</a></li>
 			<li><a class="abutton_delete_by_url" data-url="{{> app.delete_route link_id=id}}">Delete</a></li>
 		</ul>
@@ -24,25 +24,20 @@
 	Handlebars.registerPartial('app.edit_route', "{{ url_for('app.edit_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
 	Handlebars.registerPartial('app.delete_route', "{{ url_for('app.delete_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
 
+	Handlebars.registerHelper('label_for_tag', function(data) { return (data == 'read') ? 'label-success' : 'label-info'; });
 	Handlebars.registerHelper('text_for_read', function(data) { return data.includes('read') ? 'Unread' : 'Read'; });
 	Handlebars.registerHelper('text_for_link', function(data) {
 		var window_wide = 400;
 		var cutoff_wide = 100;
 		var cutoff_narrow = 30;
 		var cutoff = ($(window).width() < window_wide) ? cutoff_narrow : cutoff_wide;
-		var esc = function (t) {
-			return t
-				.replace( /&/g, '&amp;' )
-				.replace( /</g, '&lt;' )
-				.replace( />/g, '&gt;' )
-				.replace( /"/g, '&quot;' );
-		};
 
 		if (data.length <= cutoff) {
-			return data;
+			return Handlebars.Utils.escapeExpression(data);
 		}
+
 		var shortened = data.substr(0, cutoff-1);
-		return '<span class="ellipsis" title="'+esc(data)+'">'+shortened+'&#8230;</span>';
+		return '<span class="ellipsis" title="'+Handlebars.Utils.escapeExpression(data)+'">'+Handlebars.Utils.escapeExpression(shortened)+'&#8230;</span>';
 	});
 
 	var link_link = Handlebars.compile(document.getElementById('link_link.hbs').innerHTML);

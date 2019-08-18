@@ -15,14 +15,17 @@
 		"venv",
 		"zappa_settings.json"
 	],
-
 	"aws_region": "eu-west-1",
 	"tags": {"app": "bmarks"},
-
         "manage_roles": false,
         "role_name": "bmarks-execution-role",
         "role_arn": "arn:aws:iam::{{ aws_account_id }}:role/bmarks-execution-role",
 
-	"memory_size": 128
+	"memory_size": 128,
+	"keep_warm": false,
+	"aws_environment_variables": {
+		"SECRET_KEY": "{{ secret_key }}",
+		"PASSWORD": "{{ password }}"
+	}
     }
 }

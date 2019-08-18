@@ -6,7 +6,7 @@ from http import HTTPStatus
 
 from flask import url_for
 
-from bmarks import dynamo
+from bmarks import dynamo, TABLE_NAME
 
 
 def get_csrf_token(client):
@@ -63,7 +63,7 @@ def test_add_route(cl_user):
     response = form.submit()
     assert response.status_code == HTTPStatus.FOUND
 
-    data = dynamo.tables['links'].scan()['Items']
+    data = dynamo.tables[TABLE_NAME].scan()['Items']
     assert len(data) == 1
     assert data[0]['link'] == test_link['link']
     assert sorted(data[0]['tags']) == sorted(test_link['tags'])
@@ -78,7 +78,7 @@ def test_edit_route(cl_user, test_link):
     response = form.submit()
     assert response.status_code == HTTPStatus.FOUND
 
-    link = dynamo.tables['links'].get_item(Key={'id': test_link['id']})['Item']
+    link = dynamo.tables[TABLE_NAME].get_item(Key={'id': test_link['id']})['Item']
     assert link['link'] == form['link'].value
     assert sorted(link['tags']) == sorted(form['tags'].value.split(','))
 
@@ -90,12 +90,12 @@ def test_toggleread_route(cl_user, test_link):
 
     response = cl_user.post(url_for('app.toggleread_route', link_id=test_link['id']), {'csrf_token': csrf_token})
     assert response.status_code == HTTPStatus.FOUND
-    link = dynamo.tables['links'].get_item(Key={'id': test_link['id']})['Item']
+    link = dynamo.tables[TABLE_NAME].get_item(Key={'id': test_link['id']})['Item']
     assert 'read' in link['tags']
 
     response = cl_user.post(url_for('app.toggleread_route', link_id=test_link['id']), {'csrf_token': csrf_token})
     assert response.status_code == HTTPStatus.FOUND
-    link = dynamo.tables['links'].get_item(Key={'id': test_link['id']})['Item']
+    link = dynamo.tables[TABLE_NAME].get_item(Key={'id': test_link['id']})['Item']
     assert 'read' not in link['tags']
 
 
@@ -105,4 +105,17 @@ def test_delete_route(cl_user, test_link):
     csrf_token = get_csrf_token(cl_user)
     response = cl_user.post(url_for('app.delete_route', link_id=test_link['id']), {'csrf_token': csrf_token})
     assert response.status_code == HTTPStatus.FOUND
-    assert not dynamo.tables['links'].scan()['Items']
+    assert not dynamo.tables[TABLE_NAME].scan()['Items']
+
+
+def test_import_route(cl_user):
+    """test import route"""
+
+    form = cl_user.get(url_for('app.import_route')).form
+    form['imported'] = 'link1\nlink2 \n \n\n link3\n'
+    response = form.submit()
+    assert response.status_code == HTTPStatus.FOUND
+
+    links = dynamo.tables[TABLE_NAME].scan()['Items']
+    assert len(links) == 3
+    assert sorted(['link1', 'link2', 'link3']) == sorted([x['link'] for x in links])

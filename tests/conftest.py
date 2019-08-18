@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 from flask import url_for
 from webtest import TestApp
 
-from bmarks import create_app, dynamo
+from bmarks import create_app, dynamo, TABLE_NAME
 
 
 @pytest.fixture
@@ -53,5 +53,5 @@ def test_link(app):  # pylint: disable=unused-argument,redefined-outer-name
     """database persisted test link"""
 
     link = {'id': str(uuid4()), 'link': 'https://example.org/linkx', 'tags': ['test'], 'created': datetime.utcnow().isoformat()}
-    dynamo.tables['links'].put_item(Item=link)
+    dynamo.tables[TABLE_NAME].put_item(Item=link)
     yield link

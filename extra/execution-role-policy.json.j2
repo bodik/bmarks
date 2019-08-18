@@ -33,7 +33,7 @@
 				"dax:Scan",
 				"dax:UpdateItem"
 			],
-			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/links"
+			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/bmarks_links"
 		},
 		{
 			"Effect": "Allow",
@@ -43,7 +43,7 @@
 				"dax:Query",
 				"dax:Scan"
 			],
-			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/links/index/*"
+			"Resource": "arn:aws:dynamodb:*:{{ account_id }}:table/bmarks_links/index/*"
 		}
 	]
 }
