@@ -3,7 +3,7 @@
 Staying up-to-date in any field of study is hard and continuous process, in
 computer security is just a little bit harder. This app servers a few purposes:
 practice python coding, learn to work  with AWS ecosystem and to provide
-sortable haystack of interresting links for reading.
+sortable and taggable haystack of interesting links for reading.
 
 
 ## AWS Setup
