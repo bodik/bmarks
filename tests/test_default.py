@@ -83,17 +83,17 @@ def test_edit_route(cl_user, test_link):
     assert sorted(link['tags']) == sorted(form['tags'].value.split(','))
 
 
-def test_toggleread_route(cl_user, test_link):
+def test_toggle_route(cl_user, test_link):
     """test toggleread route"""
 
     csrf_token = get_csrf_token(cl_user)
 
-    response = cl_user.post(url_for('app.toggleread_route', link_id=test_link['id']), {'csrf_token': csrf_token})
+    response = cl_user.post(url_for('app.toggle_route', link_id=test_link['id'], tag='read'), {'csrf_token': csrf_token})
     assert response.status_code == HTTPStatus.FOUND
     link = dynamo.tables[TABLE_NAME].get_item(Key={'id': test_link['id']})['Item']
     assert 'read' in link['tags']
 
-    response = cl_user.post(url_for('app.toggleread_route', link_id=test_link['id']), {'csrf_token': csrf_token})
+    response = cl_user.post(url_for('app.toggle_route', link_id=test_link['id'], tag='read'), {'csrf_token': csrf_token})
     assert response.status_code == HTTPStatus.FOUND
     link = dynamo.tables[TABLE_NAME].get_item(Key={'id': test_link['id']})['Item']
     assert 'read' not in link['tags']

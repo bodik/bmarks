@@ -183,20 +183,20 @@ def edit_route(link_id):
     return render_template('addedit.html', form=form)
 
 
-@blueprint.route('/toggleread/<link_id>', methods=['POST'])
+@blueprint.route('/toggle/<link_id>/<tag>', methods=['POST'])
 @login_required
-def toggleread_route(link_id):
-    """toggles read tag on link"""
+def toggle_route(link_id, tag):
+    """toggles tag on link"""
 
     form = ButtonForm()
 
     if form.validate_on_submit():
         link = dynamo.tables[TABLE_NAME].get_item(Key={'id': link_id})['Item']
 
-        if 'read' in link['tags']:
-            link['tags'].remove('read')
+        if tag in link['tags']:
+            link['tags'].remove(tag)
         else:
-            link['tags'].append('read')
+            link['tags'].append(tag)
 
         dynamo.tables[TABLE_NAME].update_item(
             Key={'id': link_id},

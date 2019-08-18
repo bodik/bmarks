@@ -12,7 +12,8 @@
 	<div class="dropdown">
 		<button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown"><span class="caret"></span></button>
 		<ul class="dropdown-menu dropdown-menu-right">
-			<li><a class="abutton_toggleread_by_url" data-url="{{> app.toggleread_route link_id=id}}">{{text_for_read tags}}</a></li>
+			<li><a class="abutton_toggle_by_url" data-url="{{> app.toggle_route link_id=id tag='reading'}}">{{text_for_reading tags}}</a></li>
+			<li><a class="abutton_toggle_by_url" data-url="{{> app.toggle_route link_id=id tag='read'}}">{{text_for_read tags}}</a></li>
 			<li><a href="{{> app.edit_route link_id=id}}">Edit</a></li>
 			<li><a class="abutton_delete_by_url" data-url="{{> app.delete_route link_id=id}}">Delete</a></li>
 		</ul>
@@ -20,11 +21,21 @@
 </script>
 {% endraw %}
 <script type="text/javascript">
-	Handlebars.registerPartial('app.toggleread_route', "{{ url_for('app.toggleread_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
+	Handlebars.registerPartial(
+		'app.toggle_route',
+		"{{ url_for('app.toggle_route', link_id='REPLACE1', tag='REPLACE2') }}"
+			.replace('REPLACE1', '{%raw%}{{link_id}}{%endraw%}')
+			.replace('REPLACE2', '{%raw%}{{tag}}{%endraw%}')
+	);
 	Handlebars.registerPartial('app.edit_route', "{{ url_for('app.edit_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
 	Handlebars.registerPartial('app.delete_route', "{{ url_for('app.delete_route', link_id='REPLACE') }}".replace('REPLACE', '{%raw%}{{link_id}}{%endraw%}'));
 
-	Handlebars.registerHelper('label_for_tag', function(data) { return (data == 'read') ? 'label-success' : 'label-info'; });
+	Handlebars.registerHelper('label_for_tag', function(data) {
+		if (data == 'read') { return 'label-success'; }
+		if (data == 'reading') { return 'label-warning'; }
+		return 'label-info';
+	});
+	Handlebars.registerHelper('text_for_reading', function(data) { return data.includes('reading') ? 'Not reading' : 'Reading'; });
 	Handlebars.registerHelper('text_for_read', function(data) { return data.includes('read') ? 'Unread' : 'Read'; });
 	Handlebars.registerHelper('text_for_link', function(data) {
 		var window_wide = 400;
@@ -61,7 +72,7 @@
 		'pageLength': 100,
 		'lengthMenu': [[10, 50, 100, 1000, -1], [10, 50, 100, 1000, "All"]],
 		'drawCallback': function (settings) {
-			this.find('td a.abutton_toggleread_by_url').off('click').on('click', {'dt': this.api()}, action_submit_by_url);
+			this.find('td a.abutton_toggle_by_url').off('click').on('click', {'dt': this.api()}, action_submit_by_url);
 			this.find('td a.abutton_delete_by_url').off('click').on('click', {'dt': this.api(), 'confirmation': 'Really delete?'}, action_submit_by_url);
 		}
 	};
