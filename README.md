@@ -6,6 +6,15 @@ practice python coding, learn to work  with AWS ecosystem and to provide
 sortable and taggable haystack of interesting links for reading.
 
 
+## On IAM policies
+
+AWS ecosystem is guarded by policies and roles. Root account should be used as
+less as possible. For regular development a deploy policy (set of permissions
+for developer) was refined from [1], execution policy (set of permissions
+delegated to aws components executing the application code) was refined from
+default zappa created execution policy.
+
+
 ## AWS Setup
 
 ```
@@ -66,24 +75,6 @@ make coverage
 make devserver
 ```
 
-
-## IAM
-
-AWS ecosystem is managed through web console or cli. The main account is called
-root user and it's not advised to generate access keys for or pass users
-credentials to the management tools. For normal operations IAM
-users, roles and policies should be created to define fine-grained access policy.
-
-For this project it's required to setup:
-  * deploy user and attach deploy-policy for lambda, s3, apigateway and cloudlogs management
-  * execution role and policy, which is to be passed to the aws components at the time of execution of the application
-
-Basic policies should be refined from default zappa policies created by running
-zappa with example deploy policy from [1]. They should be further restricted in
-the terms of allowed actions on services and constrained to the specific
-resources to achieve least-privilege principle on all components.
-
-
 ## References
 
-[1] https://github.com/Miserlou/Zappa/blob/master/example/policy/deploy.json.
+[1] https://github.com/Miserlou/Zappa/blob/master/example/policy/deploy.json
