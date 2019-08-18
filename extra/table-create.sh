@@ -5,4 +5,4 @@ aws dynamodb create-table \
 	--key-schema 'AttributeName=id,KeyType=HASH' \
 	--attribute-definitions 'AttributeName=id,AttributeType=S' \
 	--provisioned-throughput 'ReadCapacityUnits=5,WriteCapacityUnits=5' \
-	--tag 'app=bmarks'
+	--tag 'Key=app,Value=bmarks'
